@@ -76,56 +76,57 @@ class Sort:
 
         return array_copy, (time.time() - start_time)
 
+    def __fast_sort(self, array):
+        if len(array) < 2:
+            return array
+        else:
+            pivot = array[0]
+            less = [i for i in array[1:] if i <= pivot]
+            greater = [i for i in array[1:] if i > pivot]
+            return self.__fast_sort(less) + [pivot] + self.__fast_sort(greater)
+
 
     def fast_sort(self):
         start_time = time.time()
         array_copy = self.array.copy()
-        return fs(array_copy), (time.time() - start_time)
+        return self.__fast_sort(array_copy), (time.time() - start_time)
+
+
+    def __heapify(self, array, lenght, root):
+        largest = root
+        left = 2 * root + 1
+        right = 2 * root + 2
+
+        if left < lenght and array[left] > array[root]:
+            largest = left
+
+        if right < lenght and array[right] > array[largest]:
+            largest = right
+
+        if largest != root:
+            array[largest], array[root] = array[root], array[largest]
+            self.__heapify(array, lenght, largest)
+
+
+    def __heap_sort(self, array):
+        lenght = len(array)
+
+        for root in range(lenght, -1, -1):
+            self.__heapify(array, lenght, root)
+
+        for root in range(lenght - 1, 0, -1):
+            array[root], array[0] = array[0], array[root]
+            self.__heapify(array, root, 0)
+
+        return array
 
 
     def heap_sort(self):
         start_time = time.time()
         array_copy = self.array.copy()
-        return hp(array_copy), (time.time() - start_time)
+        return self.__heap_sort(array_copy), (time.time() - start_time)
 
 
-def fs(array):
-    if len(array) < 2:
-        return array
-    else:
-        pivot = array[0]
-        less = [i for i in array[1:] if i <= pivot]
-        greater = [i for i in array[1:] if i > pivot]
-        return fs(less) + [pivot] + fs(greater)
-
-
-def heapify(array, lenght, root):
-    largest = root
-    left = 2 * root + 1
-    right = 2 * root + 2
-
-    if left < lenght and array[left] > array[root]:
-        largest = left
-
-    if right < lenght and array[right] > array[largest]:
-        largest = right
-
-    if largest != root:
-        array[largest], array[root] = array[root], array[largest]
-        heapify(array, lenght, largest)
-
-
-def hp(array):
-    lenght = len(array)
-
-    for root in range(lenght, -1, -1):
-        heapify(array, lenght, root)
-
-    for root in range(lenght - 1, 0, -1):
-        array[root], array[0] = array[0], array[root]
-        heapify(array, root, 0)
-
-    return array
 
 
 
@@ -139,6 +140,8 @@ tsh1000 = array1000.shell_sort()[1]
 tf1000 = array1000.fast_sort()[1]
 th1000 = array1000.heap_sort()[1]
 print("Вычисление 1000 - закончилось")
+
+
 
 
 array5000 = Sort([randint(1,100) for i in range(1,5000)])
@@ -201,5 +204,4 @@ plt.title("10000 elements")
 
 plt.show()
 """
-
 
